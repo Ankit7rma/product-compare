@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { Modal, Table, Button, Row, Col, Typography, message } from "antd";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-
+import { useRouter, useSearchParams } from "next/navigation";
 interface Product {
   id: number;
   title: string;
@@ -21,10 +21,15 @@ const CompareProductsPage: React.FC = () => {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("productId");
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+    if (productId) {
+      fetchProductById(parseInt(productId as string));
+    }
+  }, [productId]);
 
   const fetchProducts = async () => {
     try {
@@ -33,6 +38,18 @@ const CompareProductsPage: React.FC = () => {
       setData(result.products);
     } catch (error) {
       message.error("Failed to fetch products.");
+    }
+  };
+
+  const fetchProductById = async (productId: number) => {
+    try {
+      const response = await fetch(
+        `https://dummyjson.com/products/${productId}`
+      );
+      const product = await response.json();
+      setSelectedProducts([...selectedProducts, product]);
+    } catch (error) {
+      message.error("Failed to fetch product.");
     }
   };
 
@@ -109,7 +126,7 @@ const CompareProductsPage: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-5 w-full p-6">
-      <div className="flex  gap-5 w-full p-6">
+      <div className="flex gap-5 w-full p-6">
         <Button
           onClick={() => router.push("/products")}
           style={{ color: "black", marginBottom: "16px" }}
