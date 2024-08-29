@@ -41,7 +41,7 @@ export default function SideNavbar() {
         >
           <Button
             onClick={toggleSidebar}
-            // variant="secondary"
+            variant="secondary"
             className="rounded-full p-2"
           >
             <ChevronRight />
