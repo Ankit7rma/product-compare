@@ -19,7 +19,6 @@ export default function RootLayout({
   const [theme, setTheme] = useState<string>("light");
 
   useEffect(() => {
-    // Load theme from local storage if it exists
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) {
       setTheme(storedTheme);
