@@ -205,7 +205,7 @@ const ProductsPage: React.FC = () => {
         <img
           src={text}
           alt="product thumbnail"
-          style={{ width: 50, height: 50 }}
+          style={{ width: 50, height: 50, borderRadius: "4px" }}
         />
       ),
     },
@@ -221,7 +221,7 @@ const ProductsPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-5 w-full">
+    <div className="flex flex-col gap-5 w-full p-6">
       <PageTitle title="Product Details" />
       <Table
         columns={columns}

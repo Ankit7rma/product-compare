@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Nav } from "./ui/nav";
 
 import { Settings, ChevronRight, Package } from "lucide-react";
@@ -11,9 +11,13 @@ import { useWindowWidth } from "@react-hook/window-size";
 
 export default function SideNavbar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mobileWidth, setMobileWidth] = useState(false);
 
   const onlyWidth = useWindowWidth();
-  const mobileWidth = onlyWidth < 768;
+
+  useEffect(() => {
+    setMobileWidth(onlyWidth < 768);
+  }, [onlyWidth]);
 
   function toggleSidebar() {
     setIsCollapsed(!isCollapsed);
@@ -37,7 +41,7 @@ export default function SideNavbar() {
         >
           <Button
             onClick={toggleSidebar}
-            variant="secondary"
+            // variant="secondary"
             className="rounded-full p-2"
           >
             <ChevronRight />
