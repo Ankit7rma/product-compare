@@ -1,156 +1,121 @@
-/**
- * eslint-disable @next/next/no-img-element
- *
- * @format
- */
-
-/** @format */
+/* eslint-disable @next/next/no-img-element */
 "use client";
-
-import { DataTable } from "@/components/DataTable";
-import { ColumnDef } from "@tanstack/react-table";
-import React from "react";
+import { Table, Button, Pagination } from "antd";
+import React, { useState, useEffect } from "react";
 import PageTitle from "@/components/PageTitle";
+import { useRouter } from "next/navigation";
 
-type Props = {};
-type Payment = {
-  name: string;
-  email: string;
-  lastOrder: string;
-  method: string;
-};
+interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  discountPercentage: number;
+  brand: string;
+  category: string;
+  images: string[];
+  thumbnail: string;
+}
 
-const columns: ColumnDef<Payment>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => {
-      return (
-        <div className="flex gap-2 items-center">
-          <img
-            className="h-10 w-10"
-            src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${row.getValue(
-              "name"
-            )}`}
-            alt="user-image"
-          />
-          <p>{row.getValue("name")} </p>
-        </div>
-      );
+const ProductsPage: React.FC = () => {
+  const [data, setData] = useState<Product[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 10;
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchProducts();
+  }, [currentPage]);
+
+  const fetchProducts = async () => {
+    const response = await fetch(
+      `https://dummyjson.com/products?limit=${pageSize}&skip=${
+        (currentPage - 1) * pageSize
+      }`
+    );
+    const result = await response.json();
+    setData(result.products);
+    setTotal(result.total);
+  };
+
+  const handleCompare = (product: Product) => {
+    router.push(`/CompareProduct?productId=${product.id}`);
+  };
+
+  const columns = [
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
     },
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "lastOrder",
-    header: "Last Order",
-  },
-  {
-    accessorKey: "method",
-    header: "Method",
-  },
-];
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      sorter: (a: Product, b: Product) => a.price - b.price,
+    },
+    {
+      title: "Discount Percentage",
+      dataIndex: "discountPercentage",
+      key: "discountPercentage",
+    },
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand",
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Image",
+      dataIndex: "thumbnail",
+      key: "thumbnail",
+      render: (text: string) => (
+        <img
+          src={text}
+          alt="product thumbnail"
+          style={{ width: 50, height: 50 }}
+        />
+      ),
+    },
+    {
+      title: "Compare",
+      key: "compare",
+      render: (text: any, record: Product) => (
+        <Button onClick={() => handleCompare(record)} type="primary">
+          Compare
+        </Button>
+      ),
+    },
+  ];
 
-const data: Payment[] = [
-  {
-    name: "John Doe",
-    email: "john@example.com",
-    lastOrder: "2023-01-01",
-    method: "Credit Card",
-  },
-  {
-    name: "Alice Smith",
-    email: "alice@example.com",
-    lastOrder: "2023-02-15",
-    method: "PayPal",
-  },
-  {
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    lastOrder: "2023-03-20",
-    method: "Stripe",
-  },
-  {
-    name: "Emma Brown",
-    email: "emma@example.com",
-    lastOrder: "2023-04-10",
-    method: "Venmo",
-  },
-  {
-    name: "Michael Davis",
-    email: "michael@example.com",
-    lastOrder: "2023-05-05",
-    method: "Cash",
-  },
-  {
-    name: "Sophia Wilson",
-    email: "sophia@example.com",
-    lastOrder: "2023-06-18",
-    method: "Bank Transfer",
-  },
-  {
-    name: "Liam Garcia",
-    email: "liam@example.com",
-    lastOrder: "2023-07-22",
-    method: "Payoneer",
-  },
-  {
-    name: "Olivia Martinez",
-    email: "olivia@example.com",
-    lastOrder: "2023-08-30",
-    method: "Apple Pay",
-  },
-  {
-    name: "Noah Rodriguez",
-    email: "noah@example.com",
-    lastOrder: "2023-09-12",
-    method: "Google Pay",
-  },
-  {
-    name: "Ava Lopez",
-    email: "ava@example.com",
-    lastOrder: "2023-10-25",
-    method: "Cryptocurrency",
-  },
-  {
-    name: "Elijah Hernandez",
-    email: "elijah@example.com",
-    lastOrder: "2023-11-05",
-    method: "Alipay",
-  },
-  {
-    name: "Mia Gonzalez",
-    email: "mia@example.com",
-    lastOrder: "2023-12-08",
-    method: "WeChat Pay",
-  },
-  {
-    name: "James Perez",
-    email: "james@example.com",
-    lastOrder: "2024-01-18",
-    method: "Square Cash",
-  },
-  {
-    name: "Charlotte Carter",
-    email: "charlotte@example.com",
-    lastOrder: "2024-02-22",
-    method: "Zelle",
-  },
-  {
-    name: "Benjamin Taylor",
-    email: "benjamin@example.com",
-    lastOrder: "2024-03-30",
-    method: "Stripe",
-  },
-];
-
-export default function UsersPage({}: Props) {
   return (
-    <div className="flex flex-col gap-5  w-full">
-      <PageTitle title="Products" />
-      <DataTable columns={columns} data={data} />
+    <div className="flex flex-col gap-5 w-full">
+      <PageTitle title="Product Details" />
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        rowKey="id"
+      />
+      <Pagination
+        current={currentPage}
+        pageSize={pageSize}
+        total={total}
+        onChange={(page) => setCurrentPage(page)}
+        showSizeChanger={false}
+      />
     </div>
   );
-}
+};
+
+export default ProductsPage;
